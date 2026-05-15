@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+
+  postgres:
+    image: postgres:14
+    container_name: ecommerce_postgres
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ecommerce
+
+    ports:
+      - "5432:5432"
+
+  metabase:
+    image: metabase/metabase
+    container_name: metabase
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - postgres
+
+  airflow:
+    build: .
+    container_name: airflow
+
+    depends_on:
+      - postgres
+
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+
+    ports:
+      - "8080:8080"
+
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+
+    command: standalone
