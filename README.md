@@ -5,9 +5,9 @@
 
 This project is an end-to-end Data Engineering pipeline designed to process and analyze e-commerce transaction data using Apache Airflow, PostgreSQL, Docker, and Metabase.
 
-The objective of this project is to automate the complete ETL workflow—from raw sales data ingestion to business intelligence visualization—while demonstrating modern Data Engineering architecture concepts such as orchestration, containerization, data warehousing, and dashboard analytics.
+The main objective of this project is to automate the complete ETL workflow—from raw sales data ingestion to business intelligence visualization—while demonstrating modern Data Engineering concepts such as workflow orchestration, ETL processing, containerization, data warehousing, and dashboard analytics.
 
-The pipeline processes retail transaction records from an online retail dataset, performs data cleaning and transformation, generates business metrics, stores analytical datasets in PostgreSQL, and visualizes business insights through interactive dashboards.
+The pipeline processes retail transaction records from the Online Retail dataset, performs data cleaning and transformation, generates business metrics, stores analytical datasets in PostgreSQL, and visualizes business insights through interactive dashboards.
 
 ---
 
@@ -15,64 +15,75 @@ The pipeline processes retail transaction records from an online retail dataset,
 
 - Automated ETL workflow orchestration using Apache Airflow
 - Containerized environment using Docker & Docker Compose
-- Data cleaning and preprocessing with Pandas
-- Business metric generation and aggregation
+- Data cleaning and preprocessing using Pandas
+- Layer-based ETL architecture (Bronze / Silver / Gold)
 - PostgreSQL Data Warehouse integration
-- SQL-based analytics and reporting
-- Interactive BI dashboard using Metabase
+- SQL analytics and reporting
+- Interactive business dashboard using Metabase
 - Modular pipeline structure for scalability and maintainability
 
 ---
 
 # 🏗️ Architecture Diagram
 
+![Architecture Diagram](images/architecture.png)
+
 The pipeline follows a Batch Processing architecture orchestrated by Apache Airflow within a Dockerized environment.
 
-The workflow can be summarized as follows:
+The workflow can be summarized as:
 
-- Ingestion Layer: Reads raw CSV sales data into the pipeline
-- Processing Layer: Cleans, validates, and transforms the dataset
-- Warehouse Layer: Stores cleaned and aggregated analytical tables in PostgreSQL
-- Presentation Layer: Displays business insights via Metabase dashboards
+- Bronze Layer: Raw CSV data ingestion
+- Silver Layer: Data cleaning and validation
+- Gold Layer: Business analytics and aggregation
+- Serving Layer: PostgreSQL warehouse & Metabase dashboard
 
 ```mermaid
 flowchart TD
 
     A[Online Retail CSV Dataset] --> B[Apache Airflow]
 
-    subgraph ETL Pipeline
+    subgraph Bronze_Layer
+        direction TB
+        C1[Ingest Raw Data]
+        D1[Raw Sales Dataset]
 
-        B --> C1[Ingest Data]
-        B --> C2[Clean Data]
-        B --> C3[Transform Data]
-        B --> C4[Load to PostgreSQL]
-
+        C1 --> D1
     end
 
-    C1 --> D1[Raw Sales Data]
-    C2 --> D2[Clean Sales Data]
-    C3 --> D3[Sales Summary]
+    subgraph Silver_Layer
+        direction TB
+        C2[Clean & Validate Data]
+        D2[clean_sales Table]
 
-    subgraph Data Warehouse
-
-        C4 --> E[(PostgreSQL)]
-
-        E --> F1[clean_sales]
-        E --> F2[sales_summary]
-
+        C2 --> D2
     end
 
-    subgraph BI Dashboard
+    subgraph Gold_Layer
+        direction TB
+        C3[Transform Analytics]
+        D3[sales_summary Table]
 
-        E --> G[Metabase Dashboard]
-
-        G --> H1[Total Revenue]
-        G --> H2[Monthly Revenue Trend]
-        G --> H3[Top Products]
-        G --> H4[Top Customers]
-        G --> H5[Revenue by Country]
-
+        C3 --> D3
     end
+
+    subgraph Serving_Layer
+        direction TB
+        E[(PostgreSQL)]
+        G[Metabase Dashboard]
+
+        E --> G
+    end
+
+    B --> C1
+    D1 --> C2
+    D2 --> C3
+    D3 --> E
+
+    G --> H1[Total Revenue]
+    G --> H2[Monthly Revenue Trend]
+    G --> H3[Top Products]
+    G --> H4[Top Customers]
+    G --> H5[Revenue by Country]
 ```
 
 ---
@@ -97,71 +108,70 @@ The dataset contains real-world e-commerce transaction data including:
 
 # 💻 Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Apache Airflow | Workflow orchestration |
-| Docker & Docker Compose | Containerization |
-| Python | ETL scripting |
-| Pandas | Data processing |
-| PostgreSQL | Data warehouse |
-| SQLAlchemy | Database connection |
-| Metabase | Business intelligence dashboard |
+| Technology              | Purpose                         |
+| ----------------------- | ------------------------------- |
+| Apache Airflow          | Workflow orchestration          |
+| Docker & Docker Compose | Containerization                |
+| Python                  | ETL scripting                   |
+| Pandas                  | Data processing                 |
+| PostgreSQL              | Data warehouse                  |
+| SQLAlchemy              | Database connection             |
+| Metabase                | Business intelligence dashboard |
 
 ---
 
 # 📂 Project Structure
 
-The repository is organized to simulate a modern Data Engineering project structure.
-
 ```bash
 ecommerce-pipeline/
 │
-├── dags/                            # Airflow DAGs
+├── dags/
 │   └── ecommerce_pipeline.py
 │
-├── scripts/                         # ETL scripts
-│   ├── ingest.py                    # Data ingestion
-│   ├── clean.py                     # Data cleaning
-│   ├── transform.py                 # Data transformation
-│   └── load.py                      # PostgreSQL loading
+├── scripts/
+│   ├── ingest.py
+│   ├── clean.py
+│   ├── transform.py
+│   └── load.py
 │
-├── data/                            # Raw dataset
+├── data/
 │   └── Online Retail.csv
 │
-├── sql/                             # SQL scripts
+├── sql/
 │
-├── logs/                            # Airflow logs
+├── logs/
 │
-├── plugins/                         # Airflow plugins
+├── plugins/
 │
-├── docker-compose.yml               # Docker services
-├── Dockerfile                       # Custom Airflow image
-├── requirements.txt                 # Python dependencies
-├── .gitignore                       # Git ignore rules
-├── README.md                        # Project documentation
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+├── .gitignore
+├── README.md
 │
-└── images/                          # Screenshots
-    ├── airflow.png
-    ├── dashboard.png
+└── images/
+    ├── airflow.jpg
+    ├── dashboard.jpg
     └── architecture.png
 ```
 
 ---
 
-# ⚙️ ETL Pipeline Workflow
+# ⚙️ Data Pipeline Layers
 
-## 1️⃣ Ingestion Layer
+## 🥉 Bronze Layer (Raw Data)
 
 ### Status
-Raw Data
+
+Raw transactional dataset
 
 ### Process
 
-The ingestion process reads the raw CSV dataset into the ETL pipeline using Pandas.
+The Bronze Layer ingests the original Online Retail CSV dataset into the ETL workflow without modification. This layer preserves the raw source data for reproducibility and auditing purposes.
 
-### Tasks
+### Main Tasks
 
-- Read dataset from CSV
+- Read raw CSV dataset
 - Validate dataset structure
 - Initialize ETL workflow
 
@@ -173,14 +183,15 @@ df = pd.read_csv('/opt/airflow/data/Online Retail.csv')
 
 ---
 
-## 2️⃣ Cleaning Layer
+## 🥈 Silver Layer (Cleaned Data)
 
 ### Status
-Cleaned & Validated Data
+
+Cleaned and validated data
 
 ### Process
 
-The cleaning stage ensures data quality before transformation and analytics.
+The Silver Layer performs data preprocessing and quality checks to improve analytical reliability before loading into the warehouse.
 
 ### Cleaning Operations
 
@@ -189,6 +200,10 @@ The cleaning stage ensures data quality before transformation and analytics.
 - Convert InvoiceDate to datetime
 - Remove invalid Quantity values
 - Remove negative UnitPrice values
+
+### Generated Table
+
+- clean_sales
 
 ### Example
 
@@ -199,21 +214,27 @@ df = df[df["Quantity"] > 0]
 
 ---
 
-## 3️⃣ Transformation Layer
+## 🥇 Gold Layer (Business Analytics)
 
 ### Status
-Business-Ready Data
+
+Business-ready analytical data
 
 ### Process
 
-The transformation stage generates business metrics and analytical datasets.
+The Gold Layer generates aggregated business metrics and analytical datasets for reporting and dashboard visualization.
 
-### Generated Metrics
+### Generated Analytics
 
-- Revenue
-- Monthly sales trend
-- Product performance
-- Customer spending analytics
+- Monthly revenue trends
+- Top-selling products
+- Top customers
+- Revenue by country
+- KPI metrics
+
+### Generated Tables
+
+- sales_summary
 
 ### Revenue Calculation
 
@@ -221,7 +242,7 @@ The transformation stage generates business metrics and analytical datasets.
 df["revenue"] = df["Quantity"] * df["UnitPrice"]
 ```
 
-### Monthly Revenue Aggregation
+### Monthly Aggregation
 
 ```python
 monthly_sales = df.groupby("month")["revenue"].sum()
@@ -229,38 +250,9 @@ monthly_sales = df.groupby("month")["revenue"].sum()
 
 ---
 
-## 4️⃣ Warehouse Layer
-
-### Status
-Analytical Data Warehouse
-
-### Process
-
-The transformed datasets are loaded into PostgreSQL for analytics and dashboard visualization.
-
-### Warehouse Tables
-
-| Table | Purpose |
-|---|---|
-| clean_sales | Cleaned transaction data |
-| sales_summary | Monthly aggregated analytics |
-
-### Example
-
-```python
-df.to_sql(
-    "clean_sales",
-    engine,
-    if_exists="replace",
-    index=False
-)
-```
-
----
-
 # 🌬️ Apache Airflow DAG
 
-Apache Airflow orchestrates the complete ETL workflow.
+Apache Airflow orchestrates the ETL workflow and manages task dependencies.
 
 ## DAG Workflow
 
@@ -276,20 +268,26 @@ load_to_postgres
 
 ## DAG Features
 
-- Automated task dependency
+- Automated task scheduling
 - Retry mechanism
 - Workflow monitoring
+- Task dependency management
 - Modular ETL orchestration
+
+---
+
+# 📸 Apache Airflow DAG Output
+
+![Airflow DAG](images/airflow.jpg)
+
+- ETL workflow execution
+- Task dependency monitoring
 
 ---
 
 # 🐳 Docker Configuration
 
 ## requirements.txt
-
-Project dependencies are managed using a requirements.txt file.
-
-### Example
 
 ```text
 pandas
@@ -298,10 +296,6 @@ psycopg2-binary
 ```
 
 ---
-
-# 🐳 Dockerfile
-
-A custom Airflow image is built to install the required Python dependencies.
 
 ## Dockerfile
 
@@ -317,11 +311,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ---
 
-# 🐳 docker-compose.yml
+## docker-compose.yml
 
-Docker Compose is used to orchestrate the services.
-
-## Services Included
+### Services Included
 
 - Apache Airflow
 - PostgreSQL
@@ -342,7 +334,7 @@ volumes:
 
 ## 1️⃣ Prerequisites
 
-### Required Software
+Required software:
 
 - Docker Desktop
 - Docker Compose
@@ -350,25 +342,19 @@ volumes:
 
 ---
 
-# 2️⃣ Project Initialization
-
-Clone the repository:
+## 2️⃣ Clone Repository
 
 ```bash
-git clone <repository_url>
+git clone https://github.com/lilmipert/ecommerce-sales-pipeline.git
 ```
 
-Navigate to the project folder:
-
 ```bash
-cd ecommerce-pipeline
+cd ecommerce-sales-pipeline
 ```
 
 ---
 
-# 3️⃣ Build & Start Docker Environment
-
-Run:
+## 3️⃣ Build & Start Docker Environment
 
 ```bash
 docker compose up --build -d
@@ -376,7 +362,7 @@ docker compose up --build -d
 
 ---
 
-# 4️⃣ Access Services
+# 🌐 Access Services
 
 ## Apache Airflow
 
@@ -387,8 +373,8 @@ http://localhost:8080
 ### Login Credentials
 
 | Username | Password |
-|---|---|
-| admin | admin |
+| -------- | -------- |
+| admin    | admin    |
 
 ---
 
@@ -402,13 +388,13 @@ http://localhost:3000
 
 # 🐘 PostgreSQL Configuration
 
-| Config | Value |
-|---|---|
-| Host | postgres |
-| Port | 5432 |
+| Config   | Value     |
+| -------- | --------- |
+| Host     | postgres  |
+| Port     | 5432      |
 | Database | ecommerce |
-| Username | admin |
-| Password | admin |
+| Username | admin     |
+| Password | admin     |
 
 ---
 
@@ -420,7 +406,7 @@ http://localhost:3000
 2. Enable DAG
 3. Trigger DAG manually
 
-The pipeline workflow:
+Pipeline workflow:
 
 ```text
 ingest → clean → transform → load
@@ -430,13 +416,21 @@ ingest → clean → transform → load
 
 # 📊 SQL Analytics
 
-The project generates analytical insights using SQL queries.
-
 ## 💰 Total Revenue
 
 ```sql
 SELECT SUM(revenue)
 FROM clean_sales;
+```
+
+---
+
+## 📈 Monthly Revenue Trend
+
+```sql
+SELECT month, revenue
+FROM sales_summary
+ORDER BY month;
 ```
 
 ---
@@ -450,16 +444,6 @@ FROM clean_sales
 GROUP BY "Description"
 ORDER BY total_revenue DESC
 LIMIT 10;
-```
-
----
-
-## 📈 Monthly Revenue Trend
-
-```sql
-SELECT month, revenue
-FROM sales_summary
-ORDER BY month;
 ```
 
 ---
@@ -478,26 +462,47 @@ LIMIT 10;
 
 ---
 
+## 🌍 Revenue by Country
+
+```sql
+SELECT 
+    "Country",
+    SUM(revenue) AS total_revenue
+FROM clean_sales
+GROUP BY "Country"
+ORDER BY total_revenue DESC
+LIMIT 10;
+```
+
+---
+
 # 📊 Metabase Dashboard
+
+![Metabase Dashboard](images/dashboard.jpg)
 
 The Metabase dashboard visualizes business insights generated from the ETL pipeline.
 
 ## Dashboard Components
 
 ### 💰 Sales Overview
+
 - Total Revenue
 - Total Orders
 
 ### 📈 Revenue Analytics
+
 - Monthly Revenue Trend
 
 ### 🏆 Product Analytics
+
 - Top Products
 
 ### 👤 Customer Analytics
+
 - Top Customers
 
 ### 🌍 Geographic Analytics
+
 - Revenue by Country
 
 ---
@@ -505,33 +510,24 @@ The Metabase dashboard visualizes business insights generated from the ETL pipel
 # 🧠 Business Insights
 
 ## Revenue Trends
-- Revenue increased significantly during holiday periods.
-- Q4 generated the highest sales volume.
+
+- Revenue increased significantly during holiday periods
+- Q4 generated the highest sales volume
 
 ## Customer Behavior
-- A small percentage of customers contributed most revenue.
-- Repeat customers had significantly higher spending behavior.
+
+- A small percentage of customers contributed most revenue
+- Repeat customers generated higher spending behavior
 
 ## Product Performance
-- Certain products dominated overall revenue contribution.
-- Some products sold frequently but generated lower revenue.
+
+- Certain products dominated total revenue contribution
+- Some products sold frequently but generated lower revenue
 
 ## Geographic Analysis
-- United Kingdom generated the highest total revenue.
-- International transactions had lower purchase frequency.
 
----
-
-# 📸 Sample Outputs
-
-## Airflow DAG
-- ETL workflow execution
-- Task dependency management
-
-## Metabase Dashboard
-- Business KPI visualization
-- Revenue analytics
-- Product insights
+- United Kingdom generated the highest revenue
+- International transactions had lower purchase frequency
 
 ---
 
@@ -549,7 +545,7 @@ docker compose down
 - Implement incremental loading
 - Add real-time streaming ingestion
 - Deploy to cloud infrastructure
-- Add monitoring & alerting system
+- Add monitoring & alerting systems
 
 ---
 
