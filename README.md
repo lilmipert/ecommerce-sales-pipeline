@@ -134,35 +134,37 @@ Includes:
 
 ---
 
-#📂 Project Structure
+📂 Project Structure
 
 ```bash
 ecommerce-pipeline/
+├── dags/                            # Apache Airflow DAGs
+│   └── ecommerce_pipeline.py        # Orchestrates the complete ETL workflow
 │
-├── dags/
-│   └── ecommerce_pipeline.py
+├── scripts/                         # ETL processing scripts
+│   ├── ingest.py                    # Bronze Layer: Raw CSV data ingestion
+│   ├── clean.py                     # Silver Layer: Data cleaning & validation
+│   ├── transform.py                 # Gold Layer: Business analytics transformation
+│   └── load.py                      # Serving Layer: PostgreSQL data loading
 │
-├── scripts/
-│   ├── ingest.py
-│   ├── clean.py
-│   ├── transform.py
-│   └── load.py
+├── data/                            # Raw dataset storage
+│   └── Online Retail.csv            # Online Retail transactional dataset
 │
-├── data/
-│   └── Online Retail.csv
+├── sql/                             # SQL analytics queries
 │
-├── sql/
-├── logs/
-├── plugins/
+├── logs/                            # Apache Airflow execution logs
 │
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-├── README.md
-└── images/
-    ├── airflow.png
-    ├── dashboard.png
-    └── architecture.png
+├── plugins/                         # Custom Airflow plugins
+│
+├── docker-compose.yml               # Docker services configuration
+├── Dockerfile                       # Custom Apache Airflow image
+├── requirements.txt                 # Python dependencies
+├── README.md                        # Project documentation
+│
+└── images/                          # Project screenshots & diagrams
+    ├── airflow.jpg                  # Airflow DAG screenshot
+    ├── dashboard.jpg                # Metabase dashboard screenshot
+    └── architecture.png             # Architecture diagram
 ```
 
 ---
