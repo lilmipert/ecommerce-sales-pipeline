@@ -370,8 +370,6 @@ ORDER BY total_revenue DESC;
 ---
 
 📊 Metabase Dashboard
-Dashboard Preview
-![Metabase Dashboard](images/dashboard.png)
 
 * Total Revenue KPI
 * Monthly Trend Chart
