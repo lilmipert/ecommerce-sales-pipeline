@@ -369,6 +369,7 @@ ORDER BY total_revenue DESC;
 
 ---
 
+<<<<<<< HEAD
 # 📊 Metabase Dashboard
 
 The Metabase dashboard visualizes business insights generated from the ETL pipeline.
@@ -376,6 +377,9 @@ The Metabase dashboard visualizes business insights generated from the ETL pipel
 ## Dashboard Preview
 
 ![Metabase Dashboard](images/dashboard.png)
+=======
+📊 Metabase Dashboard
+>>>>>>> 1d190ada91fc650d611f47685722278f3fef12af
 
 ## Dashboard Components
 
